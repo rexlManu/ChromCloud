@@ -6,7 +6,14 @@
 
     <groupId>me.rexlmanu</groupId>
     <artifactId>ChromCloud</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>Core</module>
+        <module>Node</module>
+        <module>SubNode</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
