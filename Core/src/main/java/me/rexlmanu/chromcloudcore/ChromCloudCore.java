@@ -9,8 +9,8 @@ import me.rexlmanu.chromcloudcore.utility.string.StringUtils;
 public final class ChromCloudCore {
 
     public static final Gson GSON;
-    public static JsonParser PARSER;
-    public static boolean EPOLL;
+    public static final JsonParser PARSER;
+    public static final boolean EPOLL;
 
     static {
         GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
