@@ -2,6 +2,7 @@ package me.rexlmanu.chromcloudcore.networking.registry;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import me.rexlmanu.chromcloudcore.logger.ChromLogger;
 import me.rexlmanu.chromcloudcore.networking.defaults.Packet;
@@ -36,6 +37,6 @@ public final class PacketRegistry {
     }
 
     public interface PacketReader {
-        void onPacket(Packet packet);
+        void onPacket(Packet packet, ChannelHandlerContext channelHandlerContext);
     }
 }
