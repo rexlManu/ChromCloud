@@ -3,8 +3,19 @@ package me.rexlmanu.chromcloudcore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.ServerSocketChannel;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import me.rexlmanu.chromcloudcore.utility.string.StringUtils;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class ChromCloudCore {
 
@@ -12,10 +23,16 @@ public final class ChromCloudCore {
     public static final JsonParser PARSER;
     public static final boolean EPOLL;
 
+    public static final ThreadLocalRandom THREAD_LOCAL_RANDOM;
+    public static final char[] RANDOM;
+
+
     static {
         GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         PARSER = new JsonParser();
         EPOLL = Epoll.isAvailable();
+        THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
+        RANDOM = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!".toCharArray();
     }
 
     public static void sendHeader() {
@@ -50,4 +67,21 @@ public final class ChromCloudCore {
         System.out.println(" ChromCloud stopped successful");
         System.out.println(" ");
     }
+
+    public static EventLoopGroup eventLoopGroup() {
+        return EPOLL ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+    }
+
+    public static EventLoopGroup eventLoopGroup(int threads) {
+        return EPOLL ? new EpollEventLoopGroup(threads) : new NioEventLoopGroup(threads);
+    }
+
+    public static Class<? extends ServerSocketChannel> chromCloudServerSocketChanel() {
+        return EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
+    }
+
+    public static Class<? extends SocketChannel> chromCloudClientSocketChannel() {
+        return EPOLL ? EpollSocketChannel.class : NioSocketChannel.class;
+    }
+
 }
