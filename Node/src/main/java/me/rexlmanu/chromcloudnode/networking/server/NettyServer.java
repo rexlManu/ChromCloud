@@ -5,10 +5,13 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import me.rexlmanu.chromcloudcore.networking.defaults.sender.defaults.ChromChannelSender;
+import me.rexlmanu.chromcloudcore.networking.enums.SenderType;
 import me.rexlmanu.chromcloudcore.networking.handler.PacketHandler;
 import me.rexlmanu.chromcloudcore.networking.packet.ChromDecoder;
 import me.rexlmanu.chromcloudcore.networking.packet.ChromEncoder;
 import me.rexlmanu.chromcloudcore.utility.network.NettyUtils;
+import me.rexlmanu.chromcloudcore.wrapper.Wrapper;
 import me.rexlmanu.chromcloudnode.ChromCloudNode;
 import me.rexlmanu.chromcloudnode.networking.handler.ChannelInboundHandler;
 import me.rexlmanu.chromcloudnode.utility.WrapperUtils;
@@ -42,11 +45,11 @@ public final class NettyServer extends ChannelInitializer<Channel> {
         ChannelFuture channelFuture = serverBootstrap.bind(address, port).addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture channelFuture) {
-                if (channelFuture.isSuccess()) {
+                if (channelFuture.isSuccess())
                     ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "ChromCloud is binded to " + address + ":" + port);
-                } else {
+                else
                     ChromCloudNode.getInstance().getChromLogger().doLog(Level.SEVERE, "Failed to bind @" + address + ":" + port);
-                }
+
             }
         });
     }
@@ -69,5 +72,6 @@ public final class NettyServer extends ChannelInitializer<Channel> {
         channel.pipeline().addLast(new ChannelInboundHandler());
 
         ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Channel connected: [" + channel.remoteAddress().toString().replace("/", "") + "]");
+        ChromCloudNode.getInstance().getWrappers().add(new Wrapper(new ChromChannelSender(channel, SenderType.WRAPPER)));
     }
 }

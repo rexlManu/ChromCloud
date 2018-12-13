@@ -1,11 +1,11 @@
 package me.rexlmanu.chromcloudcore.networking.defaults.sender;
 
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.Channel;
 import me.rexlmanu.chromcloudcore.networking.defaults.Packet;
 
 public interface ChromSender {
 
-    ChannelHandlerContext getChannelHandlerContext();
+    Channel getChannel();
 
     void sendPacket(Packet packet);
 }

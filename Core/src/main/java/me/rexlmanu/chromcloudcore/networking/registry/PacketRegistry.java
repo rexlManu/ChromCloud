@@ -31,7 +31,8 @@ public final class PacketRegistry {
             packet.setJsonElement(jsonObject.get("content"));
             return packet;
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            ChromLogger.getInstance().doLog(Level.SEVERE, e.getMessage());
+            ChromLogger.getInstance().doLog(Level.SEVERE, e.getLocalizedMessage());
+            e.printStackTrace();
         }
         return null;
     }

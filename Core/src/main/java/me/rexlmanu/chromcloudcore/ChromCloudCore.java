@@ -84,4 +84,11 @@ public final class ChromCloudCore {
         return EPOLL ? EpollSocketChannel.class : NioSocketChannel.class;
     }
 
+    public static String randomString(int length) {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length; i++)
+            builder.append(RANDOM[THREAD_LOCAL_RANDOM.nextInt(RANDOM.length)]);
+        return builder.toString();
+    }
+
 }

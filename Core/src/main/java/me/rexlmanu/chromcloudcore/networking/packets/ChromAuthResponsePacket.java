@@ -5,21 +5,22 @@ import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.rexlmanu.chromcloudcore.networking.defaults.Packet;
+import me.rexlmanu.chromcloudcore.networking.enums.AuthType;
 
 @NoArgsConstructor
-public final class ChromAuthPacket extends Packet {
+public final class ChromAuthResponsePacket extends Packet {
 
     @Getter
-    private String authToken;
+    private AuthType authType;
 
-    public ChromAuthPacket(String authToken) {
-        this.authToken = authToken;
-        setJsonElement(new JsonPrimitive(this.authToken));
+    public ChromAuthResponsePacket(AuthType authType) {
+        this.authType = authType;
+        setJsonElement(new JsonPrimitive(authType.toString().toLowerCase()));
     }
 
     @Override
     public void setJsonElement(JsonElement jsonElement) {
         super.setJsonElement(jsonElement);
-        this.authToken = jsonElement.getAsString();
+        this.authType = AuthType.valueOf(jsonElement.getAsString().toUpperCase());
     }
 }

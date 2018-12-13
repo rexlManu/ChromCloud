@@ -1,6 +1,7 @@
 package me.rexlmanu.chromcloudcore.networking.packet;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -13,7 +14,7 @@ public final class ChromEncoder extends MessageToByteEncoder<Packet> {
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) throws Exception {
         final Buffer buffer = new Buffer(byteBuf);
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("packet", packet.getClass().getSimpleName());
+        jsonObject.add("packet", new JsonPrimitive(packet.getClass().getSimpleName()));
         jsonObject.add("content", packet.getJsonElement());
         buffer.writeString(jsonObject.toString());
     }
