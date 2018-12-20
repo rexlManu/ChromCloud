@@ -4,6 +4,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import lombok.Getter;
+import lombok.Setter;
 import me.rexlmanu.chromcloudcore.ChromCloudCore;
 import me.rexlmanu.chromcloudcore.networking.handler.PacketHandler;
 import me.rexlmanu.chromcloudcore.networking.packet.ChromDecoder;
@@ -14,6 +16,14 @@ import me.rexlmanu.chromcloudsubnode.networking.handler.WrapperNettyClientHandle
 import java.util.logging.Level;
 
 public final class NettyClient {
+
+    @Getter
+    @Setter
+    private boolean connected;
+
+    public NettyClient() {
+        this.connected = false;
+    }
 
     public void init(String address, int port) {
         EventLoopGroup group = ChromCloudCore.eventLoopGroup(4);
@@ -38,15 +48,17 @@ public final class NettyClient {
                     );
 
             Channel channel = bootstrap.connect(address, port).addListener(future -> {
-                if (future.isSuccess())
+                if (future.isSuccess()) {
                     ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.INFO, "ChromCloud is connecting to " + address + ":" + port);
-                else
+                    this.connected = true;
+                } else {
                     ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.SEVERE, "Failed to connect @" + address + ":" + port);
+                    this.connected = false;
+                }
 
             }).sync().channel();
         } catch (Exception ex) {
-            ex.printStackTrace();
-            ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.SEVERE, ex.toString());
+            ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.SEVERE, ex.getMessage());
         }
     }
 

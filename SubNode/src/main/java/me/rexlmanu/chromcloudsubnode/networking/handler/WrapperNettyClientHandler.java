@@ -14,16 +14,21 @@ public final class WrapperNettyClientHandler extends SimpleChannelInboundHandler
         ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.INFO, "Successfully connected to Node Server.");
         ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.INFO, "Trying Authentication with Node");
         ctx.channel().writeAndFlush(new ChromAuthPacket(ChromCloudSubnode.getInstance().getDefaultConfig().getAuthToken()));
+        ChromCloudSubnode.getInstance().getNettyClient().setConnected(true);
+        ReconnectHandler.getReconnectHandler().setTimeToSleep(1000);
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
         ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.WARNING, "ChromCloudNode disconnected.");
+        ChromCloudSubnode.getInstance().getNettyClient().setConnected(false);
+        ReconnectHandler.getReconnectHandler().reconnect();
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
+
     }
 
     @Override

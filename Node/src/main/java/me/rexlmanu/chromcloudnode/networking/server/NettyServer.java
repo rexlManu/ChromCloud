@@ -42,15 +42,12 @@ public final class NettyServer extends ChannelInitializer<Channel> {
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(this);
 
-        ChannelFuture channelFuture = serverBootstrap.bind(address, port).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture) {
-                if (channelFuture.isSuccess())
-                    ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "ChromCloud is binded to " + address + ":" + port);
-                else
-                    ChromCloudNode.getInstance().getChromLogger().doLog(Level.SEVERE, "Failed to bind @" + address + ":" + port);
+        ChannelFuture channelFuture = serverBootstrap.bind(address, port).addListener((ChannelFutureListener) channelFuture1 -> {
+            if (channelFuture1.isSuccess())
+                ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "ChromCloud is binded to " + address + ":" + port);
+            else
+                ChromCloudNode.getInstance().getChromLogger().doLog(Level.SEVERE, "Failed to bind @" + address + ":" + port);
 
-            }
         });
     }
 

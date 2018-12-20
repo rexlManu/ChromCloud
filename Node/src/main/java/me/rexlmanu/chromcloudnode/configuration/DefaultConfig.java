@@ -18,7 +18,7 @@ import java.util.logging.Level;
 public final class DefaultConfig {
 
     @Getter
-    private String socketIp, mySqlUsername, mySqlPassword, mySqlDatabase, authToken;
+    private String socketIp, mySqlUsername, mySqlPassword, mySqlDatabase,mySqlHostname, authToken;
     @Getter
     private int socketPort, mySqlPort;
 
@@ -55,9 +55,10 @@ public final class DefaultConfig {
         this.ips = Lists.newArrayList();
         this.ips.add(ip);
         this.socketIp = ip;
-        this.mySqlUsername = "root";
+        this.mySqlUsername = "MySQL Username";
         this.mySqlPassword = "MySQL Password";
         this.mySqlDatabase = "MySQL Database";
+        this.mySqlHostname = "MySQL Hostname";
         this.socketPort = 9100;
         this.mySqlPort = 3306;
         this.authToken = ChromCloudCore.randomString(32);
@@ -67,6 +68,7 @@ public final class DefaultConfig {
         object.addProperty("mySqlUsername", this.mySqlUsername);
         object.addProperty("mySqlPassword", this.mySqlPassword);
         object.addProperty("mySqlDatabase", this.mySqlDatabase);
+        object.addProperty("mySqlHostname", this.mySqlHostname);
         object.addProperty("socketPort", this.socketPort);
         object.addProperty("mySqlPort", this.mySqlPort);
         object.addProperty("authToken", this.authToken);
@@ -90,6 +92,7 @@ public final class DefaultConfig {
         this.mySqlUsername = jsonObject.getAsJsonPrimitive("mySqlUsername").getAsString();
         this.mySqlPassword = jsonObject.getAsJsonPrimitive("mySqlPassword").getAsString();
         this.mySqlDatabase = jsonObject.getAsJsonPrimitive("mySqlDatabase").getAsString();
+        this.mySqlHostname = jsonObject.getAsJsonPrimitive("mySqlHostname").getAsString();
         this.authToken = jsonObject.getAsJsonPrimitive("authToken").getAsString();
         this.socketPort = jsonObject.getAsJsonPrimitive("socketPort").getAsInt();
         this.mySqlPort = jsonObject.getAsJsonPrimitive("mySqlPort").getAsInt();
