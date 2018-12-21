@@ -13,6 +13,7 @@
         <module>Core</module>
         <module>Node</module>
         <module>SubNode</module>
+        <module>Docker</module>
     </modules>
 
     <properties>
