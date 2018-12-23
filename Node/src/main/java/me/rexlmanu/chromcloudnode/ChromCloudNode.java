@@ -3,13 +3,16 @@ package me.rexlmanu.chromcloudnode;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import me.rexlmanu.chromcloudcore.ChromCloudLaunch;
+import me.rexlmanu.chromcloudcore.commands.CommandManager;
 import me.rexlmanu.chromcloudcore.logger.ChromLogger;
 import me.rexlmanu.chromcloudcore.networking.registry.PacketRegistry;
 import me.rexlmanu.chromcloudcore.wrapper.Wrapper;
 import me.rexlmanu.chromcloudnode.configuration.DefaultConfig;
+import me.rexlmanu.chromcloudnode.configuration.UserConfiguration;
 import me.rexlmanu.chromcloudnode.database.DatabaseManager;
 import me.rexlmanu.chromcloudnode.networking.reader.NodePacketReader;
 import me.rexlmanu.chromcloudnode.networking.server.NettyServer;
+import me.rexlmanu.chromcloudnode.web.managers.UserManager;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -25,6 +28,8 @@ public final class ChromCloudNode implements ChromCloudLaunch {
     private DefaultConfig defaultConfig;
     private NettyServer nettyServer;
     private DatabaseManager databaseManager;
+    private UserConfiguration userConfiguration;
+    private UserManager userManager;
 
     public ChromCloudNode() {
         this.wrappers = Lists.newArrayList();
@@ -36,20 +41,22 @@ public final class ChromCloudNode implements ChromCloudLaunch {
         this.defaultConfig = new DefaultConfig(ChromLogger.getConsoleReader());
         this.nettyServer = new NettyServer();
         this.databaseManager = new DatabaseManager();
+        this.userConfiguration = new UserConfiguration();
+        this.userManager = new UserManager();
 
         try {
             this.defaultConfig.init();
             registerReaders();
-            if (this.defaultConfig.getMySqlUsername().equals("root")) {
-                this.chromLogger.doLog(Level.SEVERE, "Please dont use the root user for the database.");
-                return;
-            }
             this.databaseManager.init(this.defaultConfig);
             if (this.databaseManager.getMySQL() == null || !this.databaseManager.getMySQL().isConnected()) {
                 this.chromLogger.doLog(Level.SEVERE, "The database connection failed.");
                 return;
             }
+            this.userConfiguration.init();
+            CommandManager.init();
+            this.userManager.init();
             this.nettyServer.init(this.defaultConfig.getSocketIp(), this.defaultConfig.getSocketPort());
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -69,6 +69,7 @@ public class ChromLogger extends java.util.logging.Logger {
         consoleReader = new ConsoleReader(System.in, System.out);
         consoleReader.setExpandEvents(false);
 
+
         setUseParentHandlers(false);
         File logsDirectory = new File(".chrom/", "logs/");
         FileHandler fileHandler = new FileHandler(logsDirectory.getCanonicalPath() + "/cloud-log-" + getEnvironment() + "-Log", 5242880, 100, false);

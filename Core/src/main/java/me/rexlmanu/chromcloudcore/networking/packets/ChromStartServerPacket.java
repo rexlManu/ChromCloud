@@ -5,16 +5,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import me.rexlmanu.chromcloudcore.networking.defaults.Packet;
+import me.rexlmanu.chromcloudcore.server.defaults.JarFile;
 import me.rexlmanu.chromcloudcore.server.defaults.Server;
 
 public final class ChromStartServerPacket extends Packet {
 
     @Getter
-    private Server server;
+    private int id;
+    private JarFile jarFile;
+
 
     public ChromStartServerPacket(Server server) {
-        this.server = server;
-        setJsonElement(new JsonPrimitive(server.toString().toLowerCase()));
+        super.setJsonElement(new JsonPrimitive(server.toString().toLowerCase()));
     }
 
     @Override

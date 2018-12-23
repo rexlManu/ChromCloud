@@ -20,7 +20,7 @@ public final class DefaultConfig {
     @Getter
     private String socketIp, mySqlUsername, mySqlPassword, mySqlDatabase,mySqlHostname, authToken;
     @Getter
-    private int socketPort, mySqlPort;
+    private int socketPort, mySqlPort, webSocketPort;
 
     @Getter
     private List<String> ips;
@@ -61,6 +61,7 @@ public final class DefaultConfig {
         this.mySqlHostname = "MySQL Hostname";
         this.socketPort = 9100;
         this.mySqlPort = 3306;
+        this.webSocketPort = 9200;
         this.authToken = ChromCloudCore.randomString(32);
 
         final JsonObject object = new JsonObject();
@@ -71,6 +72,7 @@ public final class DefaultConfig {
         object.addProperty("mySqlHostname", this.mySqlHostname);
         object.addProperty("socketPort", this.socketPort);
         object.addProperty("mySqlPort", this.mySqlPort);
+        object.addProperty("webSocketPort", this.webSocketPort);
         object.addProperty("authToken", this.authToken);
         object.add("ips", ArrayUtils.toJsonArray(this.ips));
 
@@ -96,6 +98,7 @@ public final class DefaultConfig {
         this.authToken = jsonObject.getAsJsonPrimitive("authToken").getAsString();
         this.socketPort = jsonObject.getAsJsonPrimitive("socketPort").getAsInt();
         this.mySqlPort = jsonObject.getAsJsonPrimitive("mySqlPort").getAsInt();
+        this.webSocketPort = jsonObject.getAsJsonPrimitive("webSocketPort").getAsInt();
         this.ips = ArrayUtils.fromJsonArray(jsonObject.get("ips").getAsJsonArray());
     }
 
