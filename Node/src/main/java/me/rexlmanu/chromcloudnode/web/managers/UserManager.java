@@ -20,8 +20,8 @@ public final class UserManager implements DefaultManager {
 
     @Override
     public void init() {
-        if (new ChromCloudNode().getUserConfiguration() != null){
-            this.users = new ChromCloudNode().getUserConfiguration().getLoadedUsers();
-        }else ChromCloudNode.getInstance().getChromLogger().doLog(Level.SEVERE, "UserConfiguration failed.");
+        if (ChromCloudNode.getInstance().getUserConfiguration() != null) {
+            this.users = ChromCloudNode.getInstance().getUserConfiguration().getLoadedUsers();
+        } else ChromCloudNode.getInstance().getChromLogger().doLog(Level.SEVERE, "UserConfiguration failed.");
     }
 }

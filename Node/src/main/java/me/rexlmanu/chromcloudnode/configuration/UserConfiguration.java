@@ -35,7 +35,7 @@ public final class UserConfiguration implements DefaultManager {
 
     private void save() {
         try {
-            if(!file.exists())
+            if (!file.exists())
                 file.createNewFile();
             final FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(ChromCloudCore.GSON.toJson(this.userArray));
@@ -62,7 +62,7 @@ public final class UserConfiguration implements DefaultManager {
     @Override
     public void init() {
         if (!file.exists()) {
-            final User defaultUser = createDefaultUser();
+            final User defaultUser = this.createDefaultUser();
             ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "The default user '" + defaultUser.getUserName() + "' is created with the token '" + defaultUser.getToken() + "'.");
             this.userArray.add(userToObject(defaultUser));
             save();
@@ -70,6 +70,7 @@ public final class UserConfiguration implements DefaultManager {
 
         try {
             this.userArray = ChromCloudCore.PARSER.parse(new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset())).getAsJsonArray();
+            ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "The user configuration loaded successful.");
         } catch (IOException e) {
             ChromCloudNode.getInstance().getChromLogger().doLog(Level.SEVERE, "The user configuration could'nt been load. " + e.getMessage());
         }

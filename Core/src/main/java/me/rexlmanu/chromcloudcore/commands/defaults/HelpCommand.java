@@ -8,6 +8,10 @@ import me.rexlmanu.chromcloudcore.commands.sender.CommandSender;
 
 public final class HelpCommand extends Command {
 
+    public HelpCommand() {
+        super("List the commands.");
+    }
+
     @Override
     protected Response execute(CommandSender commandSender, String[] args) {
         return Response.create().jsonCallback("Commands", () -> {

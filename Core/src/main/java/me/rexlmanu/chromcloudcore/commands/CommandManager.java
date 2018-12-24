@@ -4,7 +4,10 @@ import com.google.common.collect.Maps;
 import jline.console.ConsoleReader;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import me.rexlmanu.chromcloudcore.commands.defaults.ClearCommand;
 import me.rexlmanu.chromcloudcore.commands.defaults.HelpCommand;
+import me.rexlmanu.chromcloudcore.commands.defaults.StopCommand;
+import me.rexlmanu.chromcloudcore.commands.response.Response;
 import me.rexlmanu.chromcloudcore.commands.sender.CommandSender;
 import me.rexlmanu.chromcloudcore.commands.sender.console.ConsoleCommandSender;
 import me.rexlmanu.chromcloudcore.logger.ChromLogger;
@@ -23,23 +26,32 @@ public final class CommandManager {
 
     static {
         commands = Maps.newConcurrentMap();
-        registerCommand("help", new HelpCommand());
     }
 
     public void init() {
         AsyncSession.getInstance().executeAsync(CommandManager::runListen);
-        ChromLogger.getConsoleReader().setPrompt(StringUtils.USER_NAME + "@ChromCloud: $");
+        registerCommand("help", new HelpCommand(), "commands");
+        registerCommand("clear", new ClearCommand(), "clearscreen", "c");
+        registerCommand("stop", new StopCommand(), "shutdown", "quit", "kill");
     }
 
     public void sendHelpCommand() {
-        ChromLogger.getInstance().doLog(Level.WARNING, "Please type 'help' for the command list.");
+        ChromLogger.getInstance().doLog(Level.INFO, "Please type 'help' for the command list.");
     }
 
-    public boolean dispatchCommand(String command, CommandSender commandSender) {
-        final String[] param = command.split(" ");
+    public void setDefaultPrompt(String prefix) {
+        ChromLogger.getConsoleReader().setPrompt(StringUtils.USER_NAME + "@" + prefix + ": # ");
+    }
+
+    public boolean dispatchCommand(String commandName, CommandSender commandSender) {
+        final String[] param = commandName.split(" ");
         if (!(param.length > 0)) return false;
         if (commands.containsKey(param[0].toLowerCase())) {
-            getCommand(param[0]).execute(commandSender, param);
+            final Command command = getCommand(param[0]);
+            if (command instanceof ConsoleCommand && !(commandSender instanceof ConsoleCommandSender))
+                commandSender.sendResponse(command, Response.create().error("This command is only for the console."));
+            else
+                commandSender.sendResponse(command, command.execute(commandSender, param));
             return true;
         } else
             return false;
@@ -66,8 +78,11 @@ public final class CommandManager {
         try {
             String line = consoleReader.readLine();
             while (line != null) {
-                if (!dispatchCommand(line, new ConsoleCommandSender()))
-                    sendHelpCommand();
+                if (!line.equals("")) {
+                    if (!dispatchCommand(line, new ConsoleCommandSender()))
+                        sendHelpCommand();
+
+                }
                 line = consoleReader.readLine();
             }
         } catch (IOException e) {

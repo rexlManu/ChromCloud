@@ -49,4 +49,5 @@ public final class Response implements Builder<JsonObject> {
     public JsonObject build() {
         return this.jsonObject;
     }
+
 }

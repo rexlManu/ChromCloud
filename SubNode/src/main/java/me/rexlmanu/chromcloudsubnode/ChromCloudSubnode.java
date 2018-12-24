@@ -3,6 +3,7 @@ package me.rexlmanu.chromcloudsubnode;
 import lombok.Getter;
 import lombok.Setter;
 import me.rexlmanu.chromcloudcore.ChromCloudLaunch;
+import me.rexlmanu.chromcloudcore.commands.CommandManager;
 import me.rexlmanu.chromcloudcore.logger.ChromLogger;
 import me.rexlmanu.chromcloudcore.networking.registry.PacketRegistry;
 import me.rexlmanu.chromcloudsubnode.configuration.DefaultConfig;
@@ -44,6 +45,8 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
             }
             registerReader();
             this.nettyClient.init(this.defaultConfig.getSocketIp(), this.defaultConfig.getSocketPort());
+            CommandManager.init();
+            CommandManager.setDefaultPrompt("Subnode");
         } catch (IOException e) {
         }
     }

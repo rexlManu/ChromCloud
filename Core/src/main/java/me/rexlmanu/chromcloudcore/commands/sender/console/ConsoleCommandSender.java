@@ -14,6 +14,10 @@ public final class ConsoleCommandSender implements CommandSender {
     @Override
     public void sendResponse(Command command, Response response) {
         final JsonObject jsonObject = response.build();
+        if (jsonObject.keySet().isEmpty()) return;
+
+        ChromLogger.getInstance().doLog(Level.INFO, "Response from " + command.getClass().getSimpleName());
+
         jsonObject.keySet().forEach(s -> {
             if (!s.equals("error") && !s.equals("message")) {
                 final JsonElement jsonElement = jsonObject.get(s);
@@ -29,11 +33,12 @@ public final class ConsoleCommandSender implements CommandSender {
                 }
             }
         });
-
-        ChromLogger.getInstance().doLog(Level.WARNING, jsonObject.get("message").getAsString());
+        if (jsonObject.has("message"))
+            ChromLogger.getInstance().doLog(Level.INFO, jsonObject.get("message").getAsString());
         if (jsonObject.has("error"))
             jsonObject.get("error").getAsJsonArray().forEach(jsonElement -> {
                 ChromLogger.getInstance().doLog(Level.WARNING, jsonElement.getAsString());
             });
+
     }
 }

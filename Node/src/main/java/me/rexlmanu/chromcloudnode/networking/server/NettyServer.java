@@ -53,7 +53,7 @@ public final class NettyServer extends ChannelInitializer<Channel> {
 
     @Override
     protected void initChannel(Channel channel) {
-        ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Channel [" + channel.remoteAddress().toString() + "] connecting...");
+        ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Subnode [" + channel.remoteAddress().toString() + "] connecting...");
 
         if (!WrapperUtils.isIpValid(NettyUtils.getIpByChannel(channel))) {
             ChromCloudNode.getInstance().getChromLogger().doLog(Level.WARNING, "Connection from " + channel.remoteAddress().toString() +
@@ -68,7 +68,7 @@ public final class NettyServer extends ChannelInitializer<Channel> {
         channel.pipeline().addLast(new PacketHandler());
         channel.pipeline().addLast(new ChannelInboundHandler());
 
-        ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Channel connected: [" + channel.remoteAddress().toString().replace("/", "") + "]");
+        ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Subnode connected: [" + channel.remoteAddress().toString().replace("/", "") + "]");
         ChromCloudNode.getInstance().getWrappers().add(new Wrapper(new ChromChannelSender(channel, SenderType.WRAPPER)));
     }
 }

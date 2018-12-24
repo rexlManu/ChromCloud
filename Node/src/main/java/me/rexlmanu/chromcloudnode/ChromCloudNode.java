@@ -54,6 +54,7 @@ public final class ChromCloudNode implements ChromCloudLaunch {
             }
             this.userConfiguration.init();
             CommandManager.init();
+            CommandManager.setDefaultPrompt("Node");
             this.userManager.init();
             this.nettyServer.init(this.defaultConfig.getSocketIp(), this.defaultConfig.getSocketPort());
 

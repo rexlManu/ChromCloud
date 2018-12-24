@@ -139,6 +139,7 @@ public final class DatabaseManager {
 
         public Connection openConnection() throws Exception {
             Class.forName("com.mysql.jdbc.Driver");
+            DriverManager.setLogWriter(null);
             return this.conn = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
         }
 
