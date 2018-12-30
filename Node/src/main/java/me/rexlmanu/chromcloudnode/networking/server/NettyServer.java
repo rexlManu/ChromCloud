@@ -69,6 +69,6 @@ public final class NettyServer extends ChannelInitializer<Channel> {
         channel.pipeline().addLast(new ChannelInboundHandler());
 
         ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Subnode connected: [" + channel.remoteAddress().toString().replace("/", "") + "]");
-        ChromCloudNode.getInstance().getWrappers().add(new Wrapper(new ChromChannelSender(channel, SenderType.WRAPPER)));
+        ChromCloudNode.getInstance().getWrapperManager().getWrappers().add(new Wrapper(new ChromChannelSender(channel, SenderType.WRAPPER)));
     }
 }

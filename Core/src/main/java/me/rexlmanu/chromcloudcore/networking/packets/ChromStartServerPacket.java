@@ -1,27 +1,23 @@
 package me.rexlmanu.chromcloudcore.networking.packets;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import me.rexlmanu.chromcloudcore.networking.defaults.Packet;
-import me.rexlmanu.chromcloudcore.server.defaults.JarFile;
 import me.rexlmanu.chromcloudcore.server.defaults.Server;
+import me.rexlmanu.chromcloudcore.utility.json.ArrayUtils;
 
+@Getter
 public final class ChromStartServerPacket extends Packet {
 
-    @Getter
-    private int id;
-    private JarFile jarFile;
-
+    private Server server;
 
     public ChromStartServerPacket(Server server) {
-        super.setJsonElement(new JsonPrimitive(server.toString().toLowerCase()));
+        super.setJsonElement(ArrayUtils.convertObjectToJson(server));
     }
 
     @Override
     public void setJsonElement(JsonElement jsonElement) {
         super.setJsonElement(jsonElement);
-        final JsonObject jsonObject = jsonElement.getAsJsonObject();
+        this.server = ArrayUtils.convertJsonToObject(jsonElement, Server.class);
     }
 }

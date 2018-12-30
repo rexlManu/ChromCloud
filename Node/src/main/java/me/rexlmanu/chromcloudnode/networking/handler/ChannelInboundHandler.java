@@ -26,8 +26,10 @@ public final class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
         final Channel channel = ctx.channel();
         final Wrapper wrapper = ChromCloudNode.getInstance().getWrapperByChannel(channel);
         if (wrapper != null) {
-            if (wrapper.getChromChannelSender().getAuthType().equals(AuthType.SUCCESS))
+            if (wrapper.getChromChannelSender().getAuthType().equals(AuthType.SUCCESS)) {
                 ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Subnode [" + channel.remoteAddress().toString() + "] disconnecting...");
+                ChromCloudNode.getInstance().getWrapperManager().disconnect(wrapper, false);
+            }
         }
     }
 
