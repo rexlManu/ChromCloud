@@ -3,12 +3,16 @@ package me.rexlmanu.chromcloudnode.commands;
 import me.rexlmanu.chromcloudcore.commands.Command;
 import me.rexlmanu.chromcloudcore.commands.response.Response;
 import me.rexlmanu.chromcloudcore.commands.sender.CommandSender;
+import me.rexlmanu.chromcloudcore.server.defaults.Server;
+import me.rexlmanu.chromcloudcore.utility.json.ArrayUtils;
 import me.rexlmanu.chromcloudnode.ChromCloudNode;
 
-public final class StartServerCommand extends Command {
+import java.util.Objects;
 
-    public StartServerCommand() {
-        super("Start a server");
+public final class ConsoleCommand extends Command {
+
+    public ConsoleCommand() {
+        super("Go in one console in side.");
     }
 
     @Override
@@ -19,9 +23,9 @@ public final class StartServerCommand extends Command {
         if (id == -1) {
             return Response.create().error("The id must be a number.");
         }
-        final boolean success = ChromCloudNode.getInstance().getServerManager().startServer(id);
-        if (success)
-            return Response.create().message("The server startet successful.");
-        else return Response.create().error("The server could not get started.");
+        final Server server = ChromCloudNode.getInstance().getServerManager().getServerById(id);
+        if (Objects.isNull(server))
+            return Response.create().error("Server not found.");
+        return Response.create().jsonCallback("log", () -> ArrayUtils.toJsonArray(server.getLogs()));
     }
 }

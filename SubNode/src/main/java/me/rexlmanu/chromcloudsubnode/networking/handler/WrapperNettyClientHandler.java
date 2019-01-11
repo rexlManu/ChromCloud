@@ -2,6 +2,8 @@ package me.rexlmanu.chromcloudsubnode.networking.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import me.rexlmanu.chromcloudcore.networking.defaults.sender.defaults.ChromChannelSender;
+import me.rexlmanu.chromcloudcore.networking.enums.SenderType;
 import me.rexlmanu.chromcloudcore.networking.packets.ChromAuthPacket;
 import me.rexlmanu.chromcloudsubnode.ChromCloudSubnode;
 
@@ -15,6 +17,7 @@ public final class WrapperNettyClientHandler extends SimpleChannelInboundHandler
         ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.INFO, "Trying Authentication with Node");
         ctx.channel().writeAndFlush(new ChromAuthPacket(ChromCloudSubnode.getInstance().getDefaultConfig().getAuthToken()));
         ChromCloudSubnode.getInstance().getNettyClient().setConnected(true);
+        ChromCloudSubnode.getInstance().setChromChannelSender(new ChromChannelSender(ctx.channel(), SenderType.MASTER));
         ReconnectHandler.getReconnectHandler().setTimeToSleep(1000);
     }
 

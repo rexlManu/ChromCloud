@@ -55,8 +55,8 @@ public class ChromLogger extends java.util.logging.Logger {
         setLevel(Level.ALL);
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
 
-        final Path cloudPath = Paths.get(".chrom");
-        final Path cloudLogsPath = Paths.get(".chrom", "logs");
+        final Path cloudPath = Paths.get("ChromCloud");
+        final Path cloudLogsPath = Paths.get("ChromCloud", "logs");
 
         if (!Files.exists(cloudPath))
             Files.createDirectory(cloudPath);
@@ -71,7 +71,7 @@ public class ChromLogger extends java.util.logging.Logger {
 
 
         setUseParentHandlers(false);
-        File logsDirectory = new File(".chrom/", "logs/");
+        File logsDirectory = new File("ChromCloud/", "logs/");
         FileHandler fileHandler = new FileHandler(logsDirectory.getCanonicalPath() + "/cloud-log-" + getEnvironment() + "-Log", 5242880, 100, false);
         SimpleFormatter simpleFormatter = new SimpleFormatter();
         fileHandler.setFormatter(simpleFormatter);

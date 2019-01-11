@@ -23,7 +23,7 @@ public final class UserConfiguration implements DefaultManager {
     private JsonArray userArray;
 
     public UserConfiguration() {
-        this.file = new File(".chrom", "users.json");
+        this.file = new File("ChromCloud", "users.json");
         this.userArray = new JsonArray();
     }
 

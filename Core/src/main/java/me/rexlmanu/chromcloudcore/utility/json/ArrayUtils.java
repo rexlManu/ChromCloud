@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import me.rexlmanu.chromcloudcore.ChromCloudCore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ArrayUtils {
@@ -23,6 +24,17 @@ public final class ArrayUtils {
 
     public static JsonElement convertObjectToJson(Object object) {
         return ChromCloudCore.PARSER.parse(ChromCloudCore.GSON.toJson(object));
+    }
+
+    public static List<String> shortList(List<String> stringList, int shortLength) {
+        final ArrayList<String> shortStringList = Lists.newArrayList();
+        int finalCount = stringList.size() - shortLength;
+        if (finalCount < 0)
+            finalCount = 0;
+        for (int i = stringList.size() - 1; i >= finalCount; i--) {
+            shortStringList.add(stringList.get(i));
+        }
+        return shortStringList;
     }
 
     public static <T> T convertJsonToObject(String json, Class<T> classOf) {

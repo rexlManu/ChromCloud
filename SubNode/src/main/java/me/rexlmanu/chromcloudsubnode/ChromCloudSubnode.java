@@ -5,10 +5,14 @@ import lombok.Setter;
 import me.rexlmanu.chromcloudcore.ChromCloudLaunch;
 import me.rexlmanu.chromcloudcore.commands.CommandManager;
 import me.rexlmanu.chromcloudcore.logger.ChromLogger;
+import me.rexlmanu.chromcloudcore.networking.defaults.sender.defaults.ChromChannelSender;
 import me.rexlmanu.chromcloudcore.networking.registry.PacketRegistry;
 import me.rexlmanu.chromcloudsubnode.configuration.DefaultConfig;
 import me.rexlmanu.chromcloudsubnode.networking.client.NettyClient;
 import me.rexlmanu.chromcloudsubnode.networking.reader.SubnodePacketReader;
+import me.rexlmanu.chromcloudsubnode.server.ServerManager;
+import me.rexlmanu.chromcloudsubnode.server.queue.QueueManager;
+import me.rexlmanu.chromcloudsubnode.server.version.VersionManager;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -26,6 +30,12 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
     private DefaultConfig defaultConfig;
     private NettyClient nettyClient;
 
+    private ServerManager serverManager;
+    private QueueManager queueManager;
+    private VersionManager versionManager;
+    @Setter
+    private ChromChannelSender chromChannelSender;
+
     public ChromCloudSubnode() {
         this.connected = false;
     }
@@ -36,6 +46,9 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
 
         this.defaultConfig = new DefaultConfig(ChromLogger.getConsoleReader());
         this.nettyClient = new NettyClient();
+        this.serverManager = new ServerManager();
+        this.queueManager = new QueueManager();
+        this.versionManager = new VersionManager();
 
         try {
             this.defaultConfig.init();
@@ -47,6 +60,9 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
             this.nettyClient.init(this.defaultConfig.getSocketIp(), this.defaultConfig.getSocketPort());
             CommandManager.init();
             CommandManager.setDefaultPrompt("Subnode");
+
+            this.serverManager.init();
+            this.queueManager.init();
         } catch (IOException e) {
         }
     }

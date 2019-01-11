@@ -14,6 +14,7 @@
         <module>Node</module>
         <module>SubNode</module>
         <module>Docker</module>
+        <module>TestProgram</module>
     </modules>
 
     <properties>

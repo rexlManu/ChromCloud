@@ -1,86 +1,115 @@
 package me.rexlmanu.docker.builder;
 
+import com.google.common.collect.Lists;
 import me.rexlmanu.docker.builder.interfaces.Builder;
 
 import java.io.File;
+import java.util.List;
 
-public class DockerCommandBuilder implements Builder<String> {
+public class DockerCommandBuilder implements Builder<List<String>> {
 
-    private StringBuilder stringBuilder;
+    private List<String> commands;
     private String name;
 
     public DockerCommandBuilder(String name) {
         this.name = name;
-        this.stringBuilder = new StringBuilder();
+        this.commands = Lists.newArrayList();
     }
 
     public DockerCommandBuilder base() {
-        this.stringBuilder.append("docker ").append("run ").append("-d ");
+        this.commands.add("docker");
+        this.commands.add("run");
+        this.commands.add("-d");
         return this;
     }
 
     public DockerCommandBuilder path(File file) {
-        this.stringBuilder.append("-v ").append(file.getAbsolutePath().replace("\\", "/") + ":/data -it ");
+        this.commands.add("-v");
+        this.commands.add(file.getAbsolutePath().replace("\\", "/") + ":/data");
+        this.commands.add("-it");
+        return this;
+    }
+
+    public DockerCommandBuilder attach() {
+        this.commands.add("-it");
         return this;
     }
 
     public DockerCommandBuilder eulaAccept(boolean accpted) {
-        this.stringBuilder.append("-e ").append(("eula=" + accpted).toUpperCase() + " ");
+        this.commands.add("-e");
+        this.commands.add(("eula=" + accpted).toUpperCase());
         return this;
     }
 
     public DockerCommandBuilder version(String version) {
-        this.stringBuilder.append("-e ").append(("VERSION=" + version) + " ");
+        this.commands.add("-e");
+        this.commands.add(("VERSION=" + version));
         return this;
     }
 
     public DockerCommandBuilder type(String type) {
-        this.stringBuilder.append("-e ").append(("TYPE=" + type) + " ");
+        this.commands.add("-e");
+        this.commands.add(("TYPE=" + type));
         return this;
     }
 
     public DockerCommandBuilder spigotDownloadUrl(String url) {
-        this.stringBuilder.append("-e ").append(("SPIGOT_DOWNLOAD_URL=" + url) + " ");
+        this.commands.add("-e");
+        this.commands.add(("SPIGOT_DOWNLOAD_URL=" + url));
         return this;
     }
 
     public DockerCommandBuilder bukkitDownloadUrl(String url) {
-        this.stringBuilder.append("-e ").append(("BUKKIT_DOWNLOAD_URL=" + url) + " ");
+        this.commands.add("-e");
+        this.commands.add(("BUKKIT_DOWNLOAD_URL=" + url));
+
         return this;
     }
 
     public DockerCommandBuilder ftbServerModpack(String fileName) {
-        this.stringBuilder.append("-e ").append("FTB_SERVER_MOD=" + fileName + " ");
+        this.commands.add("-e");
+        this.commands.add(("FTB_SERVER_MOD=" + fileName));
+
         return this;
     }
 
     public DockerCommandBuilder legacyJavaFixer(boolean legacyJavaFixing) {
-        this.stringBuilder.append("-e ").append("FTB_LEGACYJAVAFIXER=" + legacyJavaFixing + " ");
+        this.commands.add("-e");
+        this.commands.add("FTB_LEGACYJAVAFIXER=" + legacyJavaFixing);
+
         return this;
     }
 
     public DockerCommandBuilder forgeInstaller(String installer) {
-        this.stringBuilder.append("-e ").append("FORGE_INSTALLER=" + installer + " ");
+        this.commands.add("-e");
+        this.commands.add("FORGE_INSTALLER=" + installer);
+
         return this;
     }
 
     public DockerCommandBuilder forgeVersion(String forgeVersion) {
-        this.stringBuilder.append("-e ").append("FORGEVERSION=" + forgeVersion + " ");
+        this.commands.add("-e");
+        this.commands.add("FORGEVERSION=" + forgeVersion);
+
         return this;
     }
 
     public DockerCommandBuilder port(int port) {
-        this.stringBuilder.append("-p ").append(port + ":" + port + " ");
+        this.commands.add("-p");
+        this.commands.add("25565:" + port);
+
         return this;
     }
 
     private DockerCommandBuilder name(String name) {
-        this.stringBuilder.append("--name ").append(name + " itzg/minecraft-server");
+        this.commands.add("--name");
+        this.commands.add(name);
+        this.commands.add("itzg/minecraft-server");
         return this;
     }
 
     @Override
-    public String build() {
-        return name(name).stringBuilder.toString();
+    public List<String> build() {
+        return name(name).commands;
     }
 }

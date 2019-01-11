@@ -5,17 +5,36 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import me.rexlmanu.chromcloudcore.ChromCloudCore;
+import me.rexlmanu.chromcloudcore.networking.defaults.Packet;
+import me.rexlmanu.chromcloudcore.networking.packets.ChromServerLogUpdatePacket;
 import me.rexlmanu.chromcloudcore.networking.registry.PacketRegistry;
-import me.rexlmanu.chromcloudcore.utility.packet.Buffer;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public final class ChromDecoder extends ByteToMessageDecoder{
+public final class ChromDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        final Buffer buffer = new Buffer(byteBuf);
-        final JsonElement jsonObject = ChromCloudCore.PARSER.parse(buffer.readString());
-        list.add(PacketRegistry.readPacket(jsonObject.getAsJsonObject()));
+        final JsonElement jsonObject = ChromCloudCore.PARSER.parse(byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8));
+        final Packet e = PacketRegistry.readPacket(jsonObject.getAsJsonObject());
+        list.add(e);
+        if (e instanceof ChromServerLogUpdatePacket) {
+            ((ChromServerLogUpdatePacket) e).getLines().forEach(System.out::println);
+        }
+        byteBuf.release();
+    }
+
+    private long readLong(final ByteBuf byteBuf) {
+        int numRead = 0;
+        long result = 0;
+        byte read;
+        do {
+            read = byteBuf.readByte();
+            int value = (read & 0b01111111);
+            result |= (value << (7 * numRead));
+            numRead++;
+        } while ((read & 0b10000000) != 0);
+        return result;
     }
 }

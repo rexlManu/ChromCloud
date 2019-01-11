@@ -7,13 +7,14 @@ import me.rexlmanu.chromcloudcore.networking.defaults.Packet;
 import me.rexlmanu.chromcloudcore.server.defaults.Server;
 import me.rexlmanu.chromcloudcore.utility.json.ArrayUtils;
 
-@Getter
 @NoArgsConstructor
-public final class ChromStartServerPacket extends Packet {
+public final class ChromServerStartedNotifyPacket extends Packet {
 
+    @Getter
     private Server server;
 
-    public ChromStartServerPacket(Server server) {
+    public ChromServerStartedNotifyPacket(Server server) {
+        this.server = server;
         super.setJsonElement(ArrayUtils.convertObjectToJson(server));
     }
 
@@ -22,4 +23,5 @@ public final class ChromStartServerPacket extends Packet {
         super.setJsonElement(jsonElement);
         this.server = ArrayUtils.convertJsonToObject(jsonElement, Server.class);
     }
+
 }

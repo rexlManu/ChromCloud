@@ -18,7 +18,7 @@ public final class DatabaseHandler {
             prepare.setInt(1, id);
             final ResultSet resultSet = ChromCloudNode.getInstance().getDatabaseManager().getMySQL().query(prepare);
             if (resultSet.next()) {
-                return new Server(id, DatabaseHandler.getVersionById(id), new ServerConfiguration(resultSet.getInt("max_players"), resultSet.getString("motd"), ServerMode.valueOf(resultSet.getString("mode").toUpperCase()), resultSet.getInt("ram")));
+                return new Server(id, DatabaseHandler.getVersionById(id), new ServerConfiguration(resultSet.getInt("max_players"), resultSet.getString("motd"), ServerMode.valueOf(resultSet.getString("mode").toUpperCase()), resultSet.getInt("ram"), resultSet.getInt("port")));
             }
         } catch (SQLException e) {
             e.printStackTrace();

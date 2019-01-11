@@ -24,7 +24,7 @@ public final class DefaultConfig {
     public DefaultConfig(ConsoleReader consoleReader) {
         this.consoleReader = consoleReader;
         createDirectory();
-        this.file = new File(".chrom", "config.json");
+        this.file = new File("ChromCloud", "config.json");
     }
 
     public void init() throws IOException {
@@ -88,6 +88,6 @@ public final class DefaultConfig {
     }
 
     private void createDirectory() {
-        new File(".chrom").mkdir();
+        new File("ChromCloud").mkdir();
     }
 }

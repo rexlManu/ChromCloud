@@ -13,5 +13,6 @@ public final class ServerConfiguration {
     private String motd;
     private ServerMode serverMode;
     private int ram;
+    private int port;
 
 }

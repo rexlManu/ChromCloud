@@ -1,23 +1,19 @@
 package me.rexlmanu.chromcloudnode.server;
 
-import com.google.common.collect.Lists;
-import lombok.Getter;
 import me.rexlmanu.chromcloudcore.manager.interfaces.DefaultManager;
 import me.rexlmanu.chromcloudcore.networking.packets.ChromStartServerPacket;
 import me.rexlmanu.chromcloudcore.server.defaults.Server;
+import me.rexlmanu.chromcloudcore.wrapper.Wrapper;
 import me.rexlmanu.chromcloudnode.ChromCloudNode;
 import me.rexlmanu.chromcloudnode.database.DatabaseHandler;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 public final class ServerManager implements DefaultManager {
 
-    @Getter
-    private List<Server> servers;
-
     public ServerManager() {
-        this.servers = Lists.newArrayList();
+
     }
 
     @Override
@@ -36,8 +32,15 @@ public final class ServerManager implements DefaultManager {
         return true;
     }
 
-    private Server getServerById(int id) {
-        return servers.stream().filter(server -> server.getId() == id).findFirst().orElse(null);
+    public Server getServerById(int id) {
+        Server server = null;
+        for (Wrapper wrapper : ChromCloudNode.getInstance().getWrapperManager().getWrappers()) {
+            final Optional<Server> firstServer = wrapper.getServers().stream().filter(tempServer -> tempServer.getId() == id).findFirst();
+            if (firstServer.isPresent()) {
+                server = firstServer.get();
+            }
+        }
+        return server;
     }
 
 }
