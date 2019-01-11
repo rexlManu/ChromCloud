@@ -2,6 +2,7 @@ package me.rexlmanu.chromcloudnode.wrapper;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
+import me.rexlmanu.chromcloudcore.server.defaults.Server;
 import me.rexlmanu.chromcloudcore.wrapper.Wrapper;
 
 import java.util.List;
@@ -34,6 +35,10 @@ public final class WrapperManager {
                 wrapper.set(tempWrapper);
         });
         return wrapper.get();
+    }
+
+    public Wrapper getWrapperByServer(Server server) {
+        return this.wrappers.stream().filter(wrapper -> wrapper.getServers().contains(server)).findFirst().orElse(null);
     }
 
 }

@@ -15,7 +15,7 @@ public final class DefaultConfig {
     @Getter
     private String socketIp, authToken;
     @Getter
-    private int socketPort;
+    private int socketPort, webPort;
 
     private JsonConfiguration jsonConfiguration;
     private File file;
@@ -30,6 +30,7 @@ public final class DefaultConfig {
     public void init() throws IOException {
         String ip = "";
         this.socketPort = 9100;
+        this.webPort = 9500;
         this.authToken = "none";
         if (!file.exists()) {
             if (ip.split("\\.").length != 4) {
@@ -52,10 +53,6 @@ public final class DefaultConfig {
                     ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.INFO, "Your auth token is invalid. The length of the auth token must be 32 chars length.");
                     continue;
                 }
-                if (input.equals("none")) {
-                    ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.INFO, "Your auth token is invalid. Please enter the auth token from the node server.");
-                    continue;
-                }
                 this.authToken = input;
                 break;
             }
@@ -66,6 +63,7 @@ public final class DefaultConfig {
         final JsonObject object = new JsonObject();
         object.addProperty("socketIp", this.socketIp);
         object.addProperty("socketPort", this.socketPort);
+        object.addProperty("webPort", this.webPort);
         object.addProperty("authToken", this.authToken);
 
         this.jsonConfiguration = new JsonConfiguration(object);
@@ -85,6 +83,7 @@ public final class DefaultConfig {
         this.socketIp = jsonObject.getAsJsonPrimitive("socketIp").getAsString();
         this.authToken = jsonObject.getAsJsonPrimitive("authToken").getAsString();
         this.socketPort = jsonObject.getAsJsonPrimitive("socketPort").getAsInt();
+        this.webPort = jsonObject.getAsJsonPrimitive("webPort").getAsInt();
     }
 
     private void createDirectory() {

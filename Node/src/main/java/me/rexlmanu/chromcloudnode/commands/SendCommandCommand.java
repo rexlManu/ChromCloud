@@ -1,28 +1,24 @@
 package me.rexlmanu.chromcloudnode.commands;
 
-import me.rexlmanu.chromcloudcore.ChromCloudCore;
 import me.rexlmanu.chromcloudcore.commands.Command;
 import me.rexlmanu.chromcloudcore.commands.response.Response;
 import me.rexlmanu.chromcloudcore.commands.sender.CommandSender;
+import me.rexlmanu.chromcloudcore.networking.packets.ChromServerSendCommandPacket;
 import me.rexlmanu.chromcloudcore.server.defaults.Server;
-import me.rexlmanu.chromcloudcore.utility.web.UrlUtils;
 import me.rexlmanu.chromcloudcore.wrapper.Wrapper;
 import me.rexlmanu.chromcloudnode.ChromCloudNode;
-import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.Objects;
 
-public final class ConsoleCommand extends Command {
+public final class SendCommandCommand extends Command {
 
-    public ConsoleCommand() {
-        super("Go in one console in side.");
+    public SendCommandCommand() {
+        super("Send a command to a server.");
     }
 
     @Override
     protected Response execute(CommandSender commandSender, String[] args) {
-        if (args.length != 2)
+        if (args.length < 2)
             return Response.create().error("The id is missing");
         int id = Integer.parseInt(args[1]);
         if (id == -1) {
@@ -34,12 +30,11 @@ public final class ConsoleCommand extends Command {
         final Wrapper wrapper = ChromCloudNode.getInstance().getWrapperManager().getWrapperByServer(server);
         if (Objects.isNull(wrapper))
             return Response.create().error("Wrapper not found.");
-        final URL url = UrlUtils.getAsUrl(String.format("http://%s:%s/log/%s/%s", wrapper.getChromChannelSender().getChannel().remoteAddress().toString().replace("/", "").split(":")[0], wrapper.getWebPort(), wrapper.getToken(), server.getId()));
-        try {
-            assert url != null;
-            return Response.create().json("log", ChromCloudCore.PARSER.parse(IOUtils.toString(url.openStream(), "utf8")).getAsJsonArray());
-        } catch (IOException e) {
-            return Response.create().error("Error while requesting").error(e.getMessage());
-        }
+        final StringBuilder commandBuilder = new StringBuilder();
+        for (int i = 2; i < args.length; i++)
+            commandBuilder.append(args[i]).append(' ');
+        final String command = commandBuilder.toString();
+        wrapper.getChromChannelSender().sendPacket(new ChromServerSendCommandPacket(server.getId(), command));
+        return Response.create().message("Send commmand '" + command + "' to server.");
     }
 }

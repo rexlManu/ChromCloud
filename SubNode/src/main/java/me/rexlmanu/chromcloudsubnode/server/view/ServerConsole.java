@@ -2,9 +2,7 @@ package me.rexlmanu.chromcloudsubnode.server.view;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
-import me.rexlmanu.chromcloudcore.networking.packets.ChromServerLogUpdatePacket;
 import me.rexlmanu.chromcloudcore.utility.async.AsyncSession;
-import me.rexlmanu.chromcloudsubnode.ChromCloudSubnode;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,14 +15,17 @@ import java.util.function.Consumer;
 public final class ServerConsole {
 
     private int id;
+    @Getter
+    private List<String> logs;
 
     public ServerConsole(int id) {
         this.id = id;
+        this.logs = Lists.newArrayList();
     }
 
     public void startListen() {
         AsyncSession.getInstance().scheduleAsync(() ->
-                        readLog(logs -> ChromCloudSubnode.getInstance().getChromChannelSender().sendPacket(new ChromServerLogUpdatePacket(logs, this.id))),
+                        readLog(logs -> this.logs = logs),
                 250L, 500L, TimeUnit.MILLISECONDS);
     }
 

@@ -6,7 +6,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import me.rexlmanu.chromcloudcore.ChromCloudCore;
 import me.rexlmanu.chromcloudcore.networking.defaults.Packet;
-import me.rexlmanu.chromcloudcore.networking.packets.ChromServerLogUpdatePacket;
 import me.rexlmanu.chromcloudcore.networking.registry.PacketRegistry;
 
 import java.nio.charset.StandardCharsets;
@@ -19,10 +18,6 @@ public final class ChromDecoder extends ByteToMessageDecoder {
         final JsonElement jsonObject = ChromCloudCore.PARSER.parse(byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8));
         final Packet e = PacketRegistry.readPacket(jsonObject.getAsJsonObject());
         list.add(e);
-        if (e instanceof ChromServerLogUpdatePacket) {
-            ((ChromServerLogUpdatePacket) e).getLines().forEach(System.out::println);
-        }
-        byteBuf.release();
     }
 
     private long readLong(final ByteBuf byteBuf) {

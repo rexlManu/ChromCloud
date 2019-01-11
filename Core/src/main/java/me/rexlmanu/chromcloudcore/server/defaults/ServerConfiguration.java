@@ -14,5 +14,6 @@ public final class ServerConfiguration {
     private ServerMode serverMode;
     private int ram;
     private int port;
+    private String lastSubnode;
 
 }

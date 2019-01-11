@@ -7,7 +7,9 @@ import me.rexlmanu.chromcloudcore.logger.ChromLogger;
 import me.rexlmanu.chromcloudcore.networking.registry.PacketRegistry;
 import me.rexlmanu.chromcloudcore.wrapper.Wrapper;
 import me.rexlmanu.chromcloudnode.commands.ConsoleCommand;
+import me.rexlmanu.chromcloudnode.commands.SendCommandCommand;
 import me.rexlmanu.chromcloudnode.commands.StartServerCommand;
+import me.rexlmanu.chromcloudnode.commands.StopServerCommand;
 import me.rexlmanu.chromcloudnode.configuration.DefaultConfig;
 import me.rexlmanu.chromcloudnode.configuration.UserConfiguration;
 import me.rexlmanu.chromcloudnode.database.DatabaseManager;
@@ -67,6 +69,8 @@ public final class ChromCloudNode implements ChromCloudLaunch {
 
             CommandManager.registerCommand("start", new StartServerCommand());
             CommandManager.registerCommand("console", new ConsoleCommand());
+            CommandManager.registerCommand("sendcommand", new SendCommandCommand());
+            CommandManager.registerCommand("stopserver", new StopServerCommand());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,4 +98,5 @@ public final class ChromCloudNode implements ChromCloudLaunch {
     public Wrapper getWrapperByChannel(io.netty.channel.Channel channel) {
         return this.wrapperManager.getWrappers().stream().filter(wrapper -> wrapper.getChromChannelSender().getChannel().equals(channel)).findFirst().orElse(null);
     }
+
 }

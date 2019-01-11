@@ -1,6 +1,7 @@
 package me.rexlmanu.chromcloudnode.server;
 
 import me.rexlmanu.chromcloudcore.manager.interfaces.DefaultManager;
+import me.rexlmanu.chromcloudcore.networking.packets.ChromServerActionPacket;
 import me.rexlmanu.chromcloudcore.networking.packets.ChromStartServerPacket;
 import me.rexlmanu.chromcloudcore.server.defaults.Server;
 import me.rexlmanu.chromcloudcore.wrapper.Wrapper;
@@ -43,4 +44,13 @@ public final class ServerManager implements DefaultManager {
         return server;
     }
 
+    public boolean stopServer(int id) {
+        final Server server = DatabaseHandler.getServerById(id);
+        if (server == null)
+            return false;
+        if (server.isOnline())
+            return false;
+        ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Sending Start packet for server " + server.getId() + " to subnode.");
+        ChromCloudNode.getInstance().getWrapperManager().getWrapperWithLowestUse().getChromChannelSender().sendPacket(new ChromServerActionPacket(server.getId(), "stop"));
+        return true;    }
 }

@@ -14,6 +14,8 @@ public final class Wrapper {
 
     private ChromChannelSender chromChannelSender;
     private List<Server> servers;
+    private int webPort;
+    private String token;
 
     public Wrapper(ChromChannelSender chromChannelSender) {
         this.chromChannelSender = chromChannelSender;

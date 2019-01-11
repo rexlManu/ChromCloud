@@ -5,10 +5,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import me.rexlmanu.chromcloudcore.networking.defaults.Packet;
 import me.rexlmanu.chromcloudcore.networking.enums.AuthType;
-import me.rexlmanu.chromcloudcore.networking.packets.ChromAuthPacket;
-import me.rexlmanu.chromcloudcore.networking.packets.ChromAuthResponsePacket;
-import me.rexlmanu.chromcloudcore.networking.packets.ChromServerLogUpdatePacket;
-import me.rexlmanu.chromcloudcore.networking.packets.ChromServerStartedNotifyPacket;
+import me.rexlmanu.chromcloudcore.networking.packets.*;
 import me.rexlmanu.chromcloudcore.networking.registry.PacketRegistry;
 import me.rexlmanu.chromcloudcore.server.defaults.Server;
 import me.rexlmanu.chromcloudcore.wrapper.Wrapper;
@@ -56,6 +53,11 @@ public final class NodePacketReader implements PacketRegistry.PacketReader {
             final Server server = ChromCloudNode.getInstance().getServerManager().getServerById(chromServerLogUpdatePacket.getServerId());
             if (!Objects.isNull(server))
                 server.setLogs(chromServerLogUpdatePacket.getLines());
+        } else if (packet instanceof ChromWrapperUpdatePacket) {
+            final ChromWrapperUpdatePacket chromWrapperUpdatePacket = (ChromWrapperUpdatePacket) packet;
+            wrapper.setWebPort(chromWrapperUpdatePacket.getWebPort());
+            wrapper.setToken(chromWrapperUpdatePacket.getToken());
+            ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "HttpServer Information arrived from " + channelHandlerContext.channel().remoteAddress().toString() + ".");
         }
     }
 

@@ -13,6 +13,7 @@ import me.rexlmanu.chromcloudsubnode.networking.reader.SubnodePacketReader;
 import me.rexlmanu.chromcloudsubnode.server.ServerManager;
 import me.rexlmanu.chromcloudsubnode.server.queue.QueueManager;
 import me.rexlmanu.chromcloudsubnode.server.version.VersionManager;
+import me.rexlmanu.chromcloudsubnode.web.WebManager;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -33,6 +34,7 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
     private ServerManager serverManager;
     private QueueManager queueManager;
     private VersionManager versionManager;
+    private WebManager webManager;
     @Setter
     private ChromChannelSender chromChannelSender;
 
@@ -49,6 +51,7 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
         this.serverManager = new ServerManager();
         this.queueManager = new QueueManager();
         this.versionManager = new VersionManager();
+        this.webManager = new WebManager();
 
         try {
             this.defaultConfig.init();
@@ -63,6 +66,7 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
 
             this.serverManager.init();
             this.queueManager.init();
+            this.webManager.init();
         } catch (IOException e) {
         }
     }
