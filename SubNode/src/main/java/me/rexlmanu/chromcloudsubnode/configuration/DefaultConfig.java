@@ -15,7 +15,7 @@ public final class DefaultConfig {
     @Getter
     private String socketIp, authToken;
     @Getter
-    private int socketPort, webPort;
+    private int socketPort, webPort, ftpPort;
 
     private JsonConfiguration jsonConfiguration;
     private File file;
@@ -32,6 +32,7 @@ public final class DefaultConfig {
         this.socketPort = 9100;
         this.webPort = 9500;
         this.authToken = "none";
+        this.ftpPort = 9555;
         if (!file.exists()) {
             if (ip.split("\\.").length != 4) {
                 String input;
@@ -65,6 +66,7 @@ public final class DefaultConfig {
         object.addProperty("socketPort", this.socketPort);
         object.addProperty("webPort", this.webPort);
         object.addProperty("authToken", this.authToken);
+        object.addProperty("ftpPort", this.ftpPort);
 
         this.jsonConfiguration = new JsonConfiguration(object);
 
@@ -84,6 +86,7 @@ public final class DefaultConfig {
         this.authToken = jsonObject.getAsJsonPrimitive("authToken").getAsString();
         this.socketPort = jsonObject.getAsJsonPrimitive("socketPort").getAsInt();
         this.webPort = jsonObject.getAsJsonPrimitive("webPort").getAsInt();
+        this.ftpPort = jsonObject.getAsJsonPrimitive("ftpPort").getAsInt();
     }
 
     private void createDirectory() {

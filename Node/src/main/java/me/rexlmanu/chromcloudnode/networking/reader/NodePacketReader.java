@@ -47,7 +47,9 @@ public final class NodePacketReader implements PacketRegistry.PacketReader {
 
         if (packet instanceof ChromServerStartedNotifyPacket) {
             final ChromServerStartedNotifyPacket chromServerStartedNotifyPacket = (ChromServerStartedNotifyPacket) packet;
-            wrapper.registerServer(chromServerStartedNotifyPacket.getServer());
+            final Server server = chromServerStartedNotifyPacket.getServer();
+            wrapper.registerServer(server);
+            server.setOnline(true);
         } else if (packet instanceof ChromServerLogUpdatePacket) {
             final ChromServerLogUpdatePacket chromServerLogUpdatePacket = (ChromServerLogUpdatePacket) packet;
             final Server server = ChromCloudNode.getInstance().getServerManager().getServerById(chromServerLogUpdatePacket.getServerId());

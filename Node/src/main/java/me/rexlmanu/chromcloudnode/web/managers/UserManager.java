@@ -24,4 +24,8 @@ public final class UserManager implements DefaultManager {
             this.users = ChromCloudNode.getInstance().getUserConfiguration().getLoadedUsers();
         } else ChromCloudNode.getInstance().getChromLogger().doLog(Level.SEVERE, "UserConfiguration failed.");
     }
+
+    public boolean isValid(String authToken) {
+        return users.stream().anyMatch(user -> user.getToken().equals(authToken));
+    }
 }

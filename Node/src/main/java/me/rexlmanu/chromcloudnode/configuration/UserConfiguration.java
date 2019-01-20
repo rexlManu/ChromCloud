@@ -1,5 +1,6 @@
 package me.rexlmanu.chromcloudnode.configuration;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import me.rexlmanu.chromcloudcore.ChromCloudCore;
@@ -56,7 +57,7 @@ public final class UserConfiguration implements DefaultManager {
 
 
     private User createDefaultUser() {
-        return new User("ChromCloudAdmin", RandomUtils.generateToken(32));
+        return new User("ChromCloudAdmin", RandomUtils.generateToken(32), Lists.newArrayList());
     }
 
     @Override

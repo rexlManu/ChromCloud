@@ -7,6 +7,7 @@ import me.rexlmanu.chromcloudcore.commands.CommandManager;
 import me.rexlmanu.chromcloudcore.commands.response.Response;
 import me.rexlmanu.chromcloudcore.commands.sender.web.WebCommandSender;
 import me.rexlmanu.chromcloudcore.utility.web.HttpResponseUtils;
+import me.rexlmanu.chromcloudnode.ChromCloudNode;
 
 import java.io.IOException;
 
@@ -14,8 +15,15 @@ public final class WebHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
+
         if (!httpExchange.getRequestHeaders().containsKey("chromcloud_auth_token")) {
             HttpResponseUtils.response(httpExchange, Response.create().error("Authentication missing").build().toString());
+            return;
+        }
+
+        final String authToken = httpExchange.getRequestHeaders().getFirst("chromcloud_auth_token");
+        if (ChromCloudNode.getInstance().getUserManager().isValid(authToken)) {
+            HttpResponseUtils.response(httpExchange, Response.create().error("Authtoken is wrong").build().toString());
             return;
         }
 

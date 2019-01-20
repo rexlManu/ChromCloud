@@ -7,12 +7,14 @@ import me.rexlmanu.chromcloudcore.networking.packets.ChromServerStartedNotifyPac
 import me.rexlmanu.chromcloudcore.server.defaults.Server;
 import me.rexlmanu.chromcloudcore.server.defaults.ServerConfiguration;
 import me.rexlmanu.chromcloudcore.server.defaults.Version;
-import me.rexlmanu.chromcloudcore.utility.file.ZipUtils;
 import me.rexlmanu.chromcloudcore.utility.string.StringUtils;
 import me.rexlmanu.chromcloudsubnode.ChromCloudSubnode;
+import me.rexlmanu.chromcloudsubnode.server.ftp.FTPManager;
 import me.rexlmanu.chromcloudsubnode.server.handler.ServerHandler;
 import me.rexlmanu.docker.builder.DockerCommandBuilder;
+import org.apache.ant.compress.taskdefs.Unzip;
 import org.apache.commons.io.FileUtils;
+import org.apache.ftpserver.ftplet.FtpException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,18 +40,11 @@ public final class ServerManager implements DefaultManager {
     public boolean startServer(Server server) {
         final ServerHandler serverHandler = new ServerHandler(server);
         final Version version = server.getVersion();
+        System.out.println(version.toString());
         final ServerConfiguration serverConfiguration = server.getServerConfiguration();
         final boolean serverSetup = serverHandler.serverSetup();
         if (serverSetup) {
             ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.INFO, "Creating new server with the id " + server.getId() + ".");
-            final DockerCommandBuilder builder = new DockerCommandBuilder("mc-" + server.getId()).base().attach().path(serverHandler.getTempDirectory()).eulaAccept(true);
-            if (version.isFtbModpack())
-                builder.ftbServerModpack(version.getJarDownload());
-            if (version.isLegacyJavaFixer())
-                builder.legacyJavaFixer(true);
-            if (version.getType().toLowerCase().equals("spigot") || version.getType().toLowerCase().equals("bukkit"))
-                builder.spigotDownloadUrl(version.getJarDownload());
-            serverHandler.setBuildCommand(builder.type(version.getType()).version(version.getVersion()).port(serverConfiguration.getPort()));
         } else {
             serverHandler.getTempDirectory().mkdir();
             if (!serverHandler.getBackupDirectory().exists())
@@ -58,8 +53,21 @@ public final class ServerManager implements DefaultManager {
             if (files == null || files.length == 0)
                 throw new NullPointerException("Backup is missing...");
             final File backupZip = files[0];
-            ZipUtils.extractFolder(backupZip, serverHandler.getTempDirectory().getAbsolutePath());
+            Unzip unzipper = new Unzip();
+            unzipper.setSrc(backupZip);
+            unzipper.setDest(serverHandler.getTempDirectory());
+            unzipper.execute();
         }
+
+        final DockerCommandBuilder builder = new DockerCommandBuilder("mc-" + server.getId()).base().attach().path(serverHandler.getTempDirectory()).eulaAccept(true);
+        if (version.isFtbModpack())
+            builder.ftbServerModpack(version.getJarDownload());
+        if (version.isLegacyJavaFixer())
+            builder.legacyJavaFixer(true);
+        if (version.getType().toLowerCase().equals("spigot") || version.getType().toLowerCase().equals("bukkit"))
+            builder.spigotDownloadUrl(version.getJarDownload());
+        serverHandler.setBuildCommand(builder.type(version.getType()).version(version.getVersion()).port(serverConfiguration.getPort()));
+
         final File jarLocation = ChromCloudSubnode.getInstance().getVersionManager().getVersion(version);
         try {
             assert jarLocation != null;
@@ -85,7 +93,14 @@ public final class ServerManager implements DefaultManager {
             e.printStackTrace();
         }
         serverHandler.createServerConsole();
-        if (StringUtils.OS_NAME.equalsIgnoreCase("windows"))
+        FTPManager ftpManager = ChromCloudSubnode.getInstance().getFtpManager();
+        try {
+            if (!ftpManager.getFtpServerFactory().getUserManager().doesExist("mc-" + server.getId()))
+                ftpManager.createUserAndSave(serverHandler);
+        } catch (FtpException e) {
+            e.printStackTrace();
+        }
+        if (StringUtils.OS_NAME.contains("windows"))
             ChromCloudSubnode.getInstance().getChromLogger().doLog(Level.SEVERE, "Please run the application on a linux machine.");
         else if (serverSetup)
             serverHandler.create();

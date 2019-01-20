@@ -6,12 +6,10 @@ import me.rexlmanu.chromcloudcore.commands.CommandManager;
 import me.rexlmanu.chromcloudcore.logger.ChromLogger;
 import me.rexlmanu.chromcloudcore.networking.registry.PacketRegistry;
 import me.rexlmanu.chromcloudcore.wrapper.Wrapper;
-import me.rexlmanu.chromcloudnode.commands.ConsoleCommand;
-import me.rexlmanu.chromcloudnode.commands.SendCommandCommand;
-import me.rexlmanu.chromcloudnode.commands.StartServerCommand;
-import me.rexlmanu.chromcloudnode.commands.StopServerCommand;
+import me.rexlmanu.chromcloudnode.commands.*;
 import me.rexlmanu.chromcloudnode.configuration.DefaultConfig;
 import me.rexlmanu.chromcloudnode.configuration.UserConfiguration;
+import me.rexlmanu.chromcloudnode.configuration.WrapperConfiguration;
 import me.rexlmanu.chromcloudnode.database.DatabaseManager;
 import me.rexlmanu.chromcloudnode.networking.reader.NodePacketReader;
 import me.rexlmanu.chromcloudnode.networking.server.NettyServer;
@@ -37,6 +35,7 @@ public final class ChromCloudNode implements ChromCloudLaunch {
     private WebManager webManager;
     private ServerManager serverManager;
     private WrapperManager wrapperManager;
+    private WrapperConfiguration wrapperConfiguration;
 
     @Override
     public void onStart() {
@@ -49,6 +48,7 @@ public final class ChromCloudNode implements ChromCloudLaunch {
         this.webManager = new WebManager();
         this.serverManager = new ServerManager();
         this.wrapperManager = new WrapperManager();
+        this.wrapperConfiguration = new WrapperConfiguration();
 
         try {
             this.defaultConfig.init();
@@ -65,19 +65,21 @@ public final class ChromCloudNode implements ChromCloudLaunch {
             this.userManager.init();
             this.nettyServer.init(this.defaultConfig.getSocketIp(), this.defaultConfig.getSocketPort());
             this.webManager.init();
-
+            this.wrapperConfiguration.init();
 
             CommandManager.registerCommand("start", new StartServerCommand());
             CommandManager.registerCommand("console", new ConsoleCommand());
             CommandManager.registerCommand("sendcommand", new SendCommandCommand());
-            CommandManager.registerCommand("stopserver", new StopServerCommand());
+            CommandManager.registerCommand("stop", new StopServerCommand());
+            CommandManager.registerCommand("kill", new KillCommand());
+            CommandManager.registerCommand("remove", new RemoveCommand());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void createTables() {
-        this.databaseManager.update("CREATE TABLE IF NOT EXISTS `servers` ( `id` int(11) NOT NULL AUTO_INCREMENT, `version` varchar(255) NOT NULL DEFAULT 'spigot1.8.8', `max_players` int(11) NOT NULL DEFAULT '10', `motd` varchar(255) NOT NULL DEFAULT 'ChromCloud hosted Gameserver', `mode` enum('performance','time','custom','') NOT NULL DEFAULT 'time', `ram` int(11) NOT NULL DEFAULT '512', `port` int(11) NOT NULL, PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+        this.databaseManager.update("CREATE TABLE IF NOT EXISTS `servers` ( `id` int(11) NOT NULL AUTO_INCREMENT, `version` varchar(255) NOT NULL DEFAULT 'spigot1.8.8', `max_players` int(11) NOT NULL DEFAULT '10', `motd` varchar(255) NOT NULL DEFAULT 'ChromCloud hosted Gameserver', `mode` enum('performance','time','custom','') NOT NULL DEFAULT 'time', `ram` int(11) NOT NULL DEFAULT '512', `port` int(11) NOT NULL, `lastSubnode` varchar(255) DEFAULT NULL, `ftp_password` varchar(255) NOT NULL, PRIMARY KEY (`id`) ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1");
         this.databaseManager.update("CREATE TABLE IF NOT EXISTS `versions` ( `id` INT NOT NULL AUTO_INCREMENT , `jar_name` VARCHAR(255) NOT NULL , `jar_download` VARCHAR(255) NOT NULL , `ftb_modpack` BOOLEAN NOT NULL DEFAULT FALSE , `legacyjavafixer` BOOLEAN NOT NULL DEFAULT FALSE , `version` VARCHAR(255) NOT NULL , `type` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
     }
 

@@ -50,7 +50,26 @@ public final class ServerManager implements DefaultManager {
             return false;
         if (server.isOnline())
             return false;
-        ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Sending Start packet for server " + server.getId() + " to subnode.");
+        ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Sending start packet for server " + server.getId() + " to subnode.");
         ChromCloudNode.getInstance().getWrapperManager().getWrapperWithLowestUse().getChromChannelSender().sendPacket(new ChromServerActionPacket(server.getId(), "stop"));
-        return true;    }
+        return true;
+    }
+
+    public boolean removeServer(int id) {
+        final Server server = DatabaseHandler.getServerById(id);
+        if (server == null)
+            return false;
+        ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Sending stop packet for server " + server.getId() + " to subnode.");
+        ChromCloudNode.getInstance().getWrapperManager().getWrapperWithLowestUse().getChromChannelSender().sendPacket(new ChromServerActionPacket(server.getId(), "remove"));
+        return true;
+    }
+
+    public boolean killServer(int id) {
+        final Server server = DatabaseHandler.getServerById(id);
+        if (server == null)
+            return false;
+        ChromCloudNode.getInstance().getChromLogger().doLog(Level.INFO, "Sending kill packet for server " + server.getId() + " to subnode.");
+        ChromCloudNode.getInstance().getWrapperManager().getWrapperWithLowestUse().getChromChannelSender().sendPacket(new ChromServerActionPacket(server.getId(), "kill"));
+        return true;
+    }
 }

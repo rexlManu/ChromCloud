@@ -11,6 +11,7 @@ import me.rexlmanu.chromcloudsubnode.configuration.DefaultConfig;
 import me.rexlmanu.chromcloudsubnode.networking.client.NettyClient;
 import me.rexlmanu.chromcloudsubnode.networking.reader.SubnodePacketReader;
 import me.rexlmanu.chromcloudsubnode.server.ServerManager;
+import me.rexlmanu.chromcloudsubnode.server.ftp.FTPManager;
 import me.rexlmanu.chromcloudsubnode.server.queue.QueueManager;
 import me.rexlmanu.chromcloudsubnode.server.version.VersionManager;
 import me.rexlmanu.chromcloudsubnode.web.WebManager;
@@ -35,6 +36,7 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
     private QueueManager queueManager;
     private VersionManager versionManager;
     private WebManager webManager;
+    private FTPManager ftpManager;
     @Setter
     private ChromChannelSender chromChannelSender;
 
@@ -52,6 +54,7 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
         this.queueManager = new QueueManager();
         this.versionManager = new VersionManager();
         this.webManager = new WebManager();
+        this.ftpManager = new FTPManager();
 
         try {
             this.defaultConfig.init();
@@ -67,6 +70,7 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
             this.serverManager.init();
             this.queueManager.init();
             this.webManager.init();
+            this.ftpManager.init();
         } catch (IOException e) {
         }
     }
@@ -77,6 +81,7 @@ public final class ChromCloudSubnode implements ChromCloudLaunch {
 
     @Override
     public void onStop() {
+        this.ftpManager.onStop();
         ChromCloudSubnode.instance = null;
     }
 

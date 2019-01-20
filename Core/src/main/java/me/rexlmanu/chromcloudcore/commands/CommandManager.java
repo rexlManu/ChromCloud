@@ -32,7 +32,7 @@ public final class CommandManager {
         AsyncSession.getInstance().executeAsync(CommandManager::runListen);
         registerCommand("help", new HelpCommand(), "commands");
         registerCommand("clear", new ClearCommand(), "clearscreen", "c");
-        registerCommand("stop", new StopCommand(), "shutdown", "quit", "kill");
+        registerCommand("shutdown", new StopCommand(), "quit");
     }
 
     public void sendHelpCommand() {
